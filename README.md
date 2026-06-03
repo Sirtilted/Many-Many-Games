@@ -6,7 +6,7 @@ A web launcher for your `html/` game collection.
 
 - `index.html` — game launcher UI
 - `html/` — folder containing playable HTML/HTM game files
-- `html/folder-games.js` — file list used by the static launcher
+- `folder-games.js` — file list used by the static launcher
 - `server.js` — optional Node.js server for dynamic auto-detection
 - `package.json` — Node project metadata
 
@@ -29,19 +29,19 @@ The Node server will scan `html/` automatically and serve new games immediately.
 1. Open `index.html` in VS Code
 2. Click **Go Live** in the bottom-right corner
 
-This works for a static preview, but if you add a new game file you should also update `html/folder-games.js` or re-run the generator.
+This works for a static preview; if you add a new game file you should also update `folder-games.js` or re-run the generator.
 
 ## Add new games
 
 Add new `.html` or `.htm` files to the `html/` folder.
 
 - For the Node server: no extra action required.
-- For static preview: update `html/folder-games.js` or run `npm run generate` after installing Node.
+- For static preview: update `folder-games.js` or run `npm run generate` after installing Node.
 
 ## Helpful scripts
 
 - `npm start` — run the Express server
-- `npm run generate` — regenerate `html/folder-games.js` from the `html/` folder
+- `npm run generate` — regenerate `folder-games.js` from the `html/` folder
 
 ## GitHub Pages
 
@@ -52,7 +52,11 @@ If you want, I can also add a GitHub Actions workflow to build or deploy it auto
 ## Vercel notes
 
 - Vercel serves the repository contents as a static site. To play games from this launcher on Vercel you must either:
-   - Commit and push the `html/` folder with your game files (not recommended for very large collections), or
+   - Commit and push the `html/` folder with your game files, or
    - Host the game files on a CDN or another static host and set the "Games base URL" in the launcher UI (top-right) to that host (for example `https://cdn.example.com/games/`).
 
-- The launcher will use the configured base URL when opening games, so you can deploy the launcher to Vercel and keep the large game assets hosted elsewhere.
+- This repository now includes a Vercel build helper that installs Git LFS during the build and pulls the actual game files before deployment.
+
+- The helper script is now part of the repository and the package also includes a standard `build` script, so Vercel should run it during deploy.
+
+- If the Vercel build still cannot fetch LFS objects, use an external static host for the `html/` assets and point the launcher at that URL.

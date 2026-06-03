@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const htmlDir = path.join(__dirname, 'html');
-const outputFile = path.join(htmlDir, 'folder-games.js');
+const outputFile = path.join(__dirname, 'folder-games.js');
 const exclude = new Set(['player.html', 'style.css']);
 
 function formatTitle(filename) {

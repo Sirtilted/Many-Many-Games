@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "generate": "node generate-game-list.js"
+    "generate": "node generate-game-list.js",
+    "build": "node scripts/ensure-lfs.js",
+    "vercel-build": "node scripts/ensure-lfs.js"
   },
   "keywords": ["games", "html"],
   "author": "",

@@ -238,7 +238,7 @@
     </div>
 
     <footer>
-      <p>Add new HTML game files to the 'html' folder and they'll appear here automatically!</p>
+      <p>Add new HTML game files to the 'html' folder and update `folder-games.js` manually.</p>
     </footer>
   </div>
 
@@ -246,83 +246,8 @@
 
   <script src="folder-games.js"></script>
   <script>
-    const GAMES_API = '/api/games';
     let allGames = [];
     let filteredGames = [];
-
-    // Hardcoded list of games - will be used as fallback
-    const GAME_LIST = [
-      "1.12.html", "1.5.html", "1.8.html", "10minutestilldawn.html", "12minibattles.html",
-      "1on1soccer.html", "1on1tennis.html", "1v1.lol.html", "2048.html", "2048cupcakes.html",
-      "3Dflightsimulator.html", "8ballclassic.html", "achieveunlocked.html", "agariolite.html",
-      "ageofwar.html", "ageofwar2.html", "agesofconflict.html", "Alpha_1.2.6.html", "amongus.html",
-      "angrybirds.html", "angrybirdsshowdown.html", "angrybirdsspace.html", "aow.html", "artofwar.html",
-      "avalanche.html", "awesometanks.html", "awesometanks2.html", "backrooms.html", "baconmaydie.html",
-      "badicecream.html", "badicecream2.html", "badicecream3.html", "badparenting.html", "badpiggies.html",
-      "baldisbasics.html", "baseballbros.html", "basketballlegends.html", "basketballstars.html",
-      "basketbros.html", "basketrandom.html", "Beta_1.3.html", "bitlife.html", "bitplanes.htm",
-      "blockysnakes.html", "bloons.html", "bloonsTD.html", "bloonsTD2.html", "bloonsTD3.html",
-      "bloonsTD4.html", "bloonsTD5.html", "bloxorz.html", "blumgiracers.html", "blumgirocket.html",
-      "bobtherobber.html", "bobtherobber2.html", "bobtherobber5.html", "bouncymotors.html", "bowmasters.html",
-      "boxingrandom.htm", "breakingthebank.html", "btd.html", "btd2.html", "bubbleshooter.html",
-      "candycrush.html", "capybaraclicker.html", "cardrawing.html", "carkingarena.html", "Castle Hero.html",
-      "castlehero.html", "checkers.html", "chess.html", "choppyorc.html", "circloO.html", "circloO2.html",
-      "clashofvikings.html", "clcellmachinemyst.html", "cleanupio.html", "clsonicmaniaplusoffline.html",
-      "clusterrush.html", "cookieclicker.htm", "crazycars.html", "crazycattle3D.html", "crazycrashlanding.html",
-      "crazymotorcycle.html", "crossyroad.htm", "cuttherope.html", "dadish.html", "dadish2.html", "dadish3.html",
-      "deathchase.html", "deathrun3D.html", "demolitionderbycrashracing.html", "dl1.html", "dl2.html", "dl3.html",
-      "dl4.html", "doodlejump.html", "drawclimber.html", "dreadheadparkour.htm", "driftboss.htm", "drivemad.htm",
-      "ducklife.html", "ducklife2.html", "ducklife3.html", "ducklife4.html", "ducklife5.html", "ducklingsio.html",
-      "eagleride.html", "earntodie.html", "earntodie2.html", "eggycar.html", "elasticface.htm", "escaperoad.html",
-      "escaperoad2.html", "escapingtheprison.html", "evilglitch.html", "fancypantsadventure.html",
-      "fancypantsadventure2.html", "fireboyandwatergirl.html", "fireboyandwatergirl2.html",
-      "fireboyandwatergirl3.html", "fireboyandwatergirl4.html", "flappybird.html", "floodrunner2.html",
-      "floodrunner3.html", "floodrunner4.html", "FNAE.html", "fnaf.html", "fnaf2.html", "fnaf3.html",
-      "fnaf4.html", "footballbros.html", "footballlegends.html", "freerider3.html", "fruitninja.html",
-      "funnybattle.html", "funnybattle2.html", "funnymadracing.html", "funnyshooter2.html", "geometrydash.html",
-      "geometrydashlite.html", "geometryvibes.html", "getawayshootout.htm", "getontop.html", "gladihoppers.html",
-      "googlebaseball.html", "googledino.html", "granny.html", "granny2.html", "guesstheiranswer.html",
-      "hanger2.html", "happywheels.html", "hardestgame.html", "helixjump.html", "highwaytraffic.html",
-      "hillclimbracinglite.html", "holeio.html", "houseofhazards.html", "hoverracerdrive.html", "hs-btb.html",
-      "hs-etp.html", "hs-ftc.html", "hs-ita-1.html", "hs-ita.html", "hs-std.html", "idlebreakout.html",
-      "impossiblequiz.html", "Indev.html", "info.html", "interactivebuddy.html", "ironsnout.html",
-      "jetpackjoyride.html", "johnnytrigger.html", "jumpingshell.html", "karatebros.html", "kartbros.html",
-      "learntofly.html", "learntofly2.html", "learntofly3.html", "learntoflyidle.html", "leveldevil.html",
-      "madalinstuntcars2.html", "mario63.html", "marioflash.html", "mariokart.html", "meatboy.html",
-      "melonplayground.html", "mergeroundracers.html", "minecrafttd.html", "minesweeper.html", "mini_metro.html",
-      "monkeymart.htm", "monstertracks.html", "motherload.html", "motox3m.htm", "motox3m2.html", "motox3m3.html",
-      "motox3mpoolparty.html", "motox3mspookyland.html", "motox3mwinter.html", "n.html", "noobminer.html",
-      "oppositeday.html", "ovo.html", "ovo2.html", "ovo3dimensions.html", "pacman.html", "pandemic1.html",
-      "pandemic2.html", "papasbakeria.html", "papasburgeria.html", "papascheeseria.html", "papascupcakeria.html",
-      "papasdonuteria.html", "papasfreezeria.html", "papashotdoggeria.html", "papaspancakeria.html",
-      "papaspastaria.html", "papaspizzeria.html", "papasscooperia.html", "papassushiria.html", "papastacomia.html",
-      "papaswingeria.html", "paperio2.htm", "PaperMinecraft1.15.1.html", "parkingfury.html", "parkingfury2.html",
-      "parkingfury3.html", "pcbreak.html", "Pet Rock Simulator 1.4.1 SMALLER.html", "picosschool.html",
-      "pingpongchaos.html", "pixelspeedrun.html", "plantsvszombies.html", "plonky.html", "polytrack.html",
-      "poorbunny.html", "portal2d.html", "portalflash.html", "pou.html", "qwop.html", "ragdollarchers.htm",
-      "ragdollhit.html", "ragdollsoccer.html", "redball4vol1.html", "redball4vol2.html", "redball4vol3.html",
-      "retrobowl.html", "retrobowlcollege.html", "retrohighway.html", "retropingpong.html", "riddleschool.html",
-      "riddleschool2.html", "riddleschool3.html", "riddleschool4.html", "riddleschool5.html", "riddletransfer.html",
-      "riddletransfer2.html", "rocketsoccerderby.html", "rooftopsnipers.htm", "rooftopsnipers2.html", "rs-t.html",
-      "rs-t2.html", "rs.html", "rs2.html", "rs3.html", "rs4.html", "rs5.html", "rubixcube.html", "run.html",
-      "run2.html", "run3.html", "sandgame.html", "sch.html", "shortlife.html", "slope.html", "slope2player.html",
-      "slope3.html", "slowroads.html", "sm63.html", "sm64.html", "snake.html", "snowballio.html", "snowrider.htm",
-      "snowroad.htm", "soccerbros.html", "soccerrandom.htm", "sonic.html", "spacebarclicker.html", "spaceiskey.html",
-      "spaceiskey2.html", "spacewaves.html", "speedstars.html", "sprunki.html", "stack.html", "stacktris.html",
-      "stateio.html", "sth.html", "sth2.html", "stickarchersbattle.html", "stickfighter.html", "stickmanhook.html",
-      "stickmerge.html", "stickrpg.html", "subwaysurfersbeijing.html", "subwaysurfershavana.html",
-      "subwaysurferssanfrancisco.html", "superbikethechampion.html", "superhot.html", "superliquidsoccer.html",
-      "supersmashflash.html", "superstarcar.html", "tabletennisworldtour.html", "tag.html", "taproad.html",
-      "templeofboom.html", "templerun2.htm", "territorialio.html", "tetris.html", "theimpossiblequiz.html",
-      "theimpossiblequiz2.html", "thereisnog.html", "theyarecoming.html", "thisistheonlylevel.html",
-      "thisistheonlyleveltoo.html", "timeshooter2.html", "timeshooter3.htm", "tinyfishing.html",
-      "tombofthemask.htm", "trapthecat.html", "triviacrack.html", "tron.html", "tubejumpers.html",
-      "tunnelrush.html", "UNDERTALE.html", "unfairmario.html", "unicyclehero.html", "vex4.html", "vex5.html",
-      "vex6.htm", "vex7.htm", "vex8.htm", "vexx3m.html", "vexx3m2.html", "volleyrandom.html", "wartheknights.html",
-      "webecomewhatwebehold.html", "wheeliebike.html", "wheely.html", "wheely2.html", "wheely3.html", "wheely4.html",
-      "wheely5.html", "wheely6.html", "wheely7.html", "wheely8.html", "wordleunlimited.html", "worldshardestgame.html",
-      "worldshardestgame2.html", "worldshardestgame3.html", "wrestlebros.html", "zombierush.html"
-    ];
 
     function formatGameTitle(filename) {
       const name = filename.replace(/\.(html|htm)$/i, '');
@@ -334,46 +259,31 @@
       return formatted;
     }
 
-    async function loadGames() {
+    function loadGames() {
       const container = document.getElementById('gamesContainer');
       const countEl = document.getElementById('gameCount');
       const refreshBtn = document.getElementById('refreshBtn');
 
+      refreshBtn.classList.add('loading');
+      refreshBtn.disabled = true;
+
       try {
-        refreshBtn.classList.add('loading');
-        refreshBtn.disabled = true;
-
-        // Try to load from API first, fall back to hardcoded list
-        let games = [];
-        try {
-          const response = await fetch('/api/games');
-          if (response.ok) {
-            games = await response.json();
-          }
-        } catch (e) {
-          console.log('API not available, using hardcoded list');
+        if (!Array.isArray(window.folderGames) || folderGames.length === 0) {
+          throw new Error('No game list found. Update folder-games.js with the filenames from html/.');
         }
 
-        // If API didn't work, try folder-games.js first, then fall back to hardcoded list
-        if (games.length === 0 && Array.isArray(window.folderGames) && window.folderGames.length > 0) {
-          games = folderGames.map(file => ({
-            title: formatGameTitle(file),
-            filename: file
-          })).sort((a, b) => a.title.localeCompare(b.title));
-        } else if (games.length === 0) {
-          games = GAME_LIST.map(file => ({
-            title: formatGameTitle(file),
-            filename: file
-          })).sort((a, b) => a.title.localeCompare(b.title));
-        }
+        allGames = folderGames.map(file => ({
+          title: formatGameTitle(file),
+          filename: file
+        })).sort((a, b) => a.title.localeCompare(b.title));
 
-        allGames = games;
         filteredGames = [...allGames];
 
         countEl.textContent = `${allGames.length} game${allGames.length !== 1 ? 's' : ''} available`;
         renderGames(filteredGames);
       } catch (error) {
         console.error('Error loading games:', error);
+        countEl.textContent = '0 games available';
         container.innerHTML = `
           <div class="empty-state">
             <h2>⚠️ Error Loading Games</h2>
@@ -400,7 +310,7 @@
       }
 
       container.innerHTML = games.map(game => `
-        <div class="game-card" onclick="playGame('${(game.filename || game.path).replace(/'/g, "\\'")}', '${game.title.replace(/'/g, "\\'")}')">
+        <div class="game-card" onclick="playGame('${game.filename.replace(/'/g, "\\'")}')">
           <div class="game-card-content">
             <div class="game-card-title">${game.title}</div>
           </div>
@@ -408,15 +318,13 @@
       `).join('');
     }
 
-    function playGame(path, title) {
-      // `path` is a filename (e.g. "game.html") or an absolute URL
+    function playGame(filename) {
       const base = getBaseUrl();
-      let finalUrl = path;
-      // If path is a bare filename (no protocol or leading slash), build using base
-      if (!/^(https?:)?\/\//i.test(path) && !path.startsWith('/')) {
+      let finalUrl = filename;
+      if (!/^(https?:)?\/\//i.test(filename) && !filename.startsWith('/')) {
         let b = base || './html/';
         if (!b.endsWith('/')) b += '/';
-        finalUrl = b + encodeURIComponent(path);
+        finalUrl = b + encodeURIComponent(filename);
       }
       window.open(finalUrl, '_blank');
     }
@@ -464,21 +372,6 @@
 
     // Load games on page load
     loadGames();
-
-    // Auto-refresh games every 5 seconds to catch new additions
-    setInterval(() => {
-      fetch(GAMES_API)
-        .then(res => res.json())
-        .then(games => {
-          if (games.length !== allGames.length) {
-            allGames = games;
-            filterGames(document.getElementById('searchBox').value);
-            document.getElementById('gameCount').textContent = 
-              `${allGames.length} game${allGames.length !== 1 ? 's' : ''} available`;
-          }
-        })
-        .catch(err => console.log('Auto-refresh check failed:', err));
-    }, 5000);
   </script>
 </body>
 </html>
