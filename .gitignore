@@ -11,4 +11,4 @@ Thumbs.db
 *.log
 
 # Do not track the large local game files
-html/
+# html/ is intentionally tracked via Git LFS when enabled; remove this line to add files
