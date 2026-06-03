@@ -218,6 +218,14 @@
         class="search-box" 
         placeholder="Search games..."
       >
+      <input
+        type="text"
+        id="baseUrl"
+        class="search-box"
+        placeholder="Games base URL (e.g. ./html/ or https://cdn.example.com/games/)"
+        title="Base URL where game files are hosted"
+        style="max-width:500px"
+      >
       <button id="refreshBtn" class="refresh-btn">🔄 Refresh</button>
     </div>
 
@@ -233,6 +241,8 @@
       <p>Add new HTML game files to the 'html' folder and they'll appear here automatically!</p>
     </footer>
   </div>
+
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
   <script src="folder-games.js"></script>
   <script>
@@ -348,14 +358,12 @@
         if (games.length === 0 && Array.isArray(window.folderGames) && window.folderGames.length > 0) {
           games = folderGames.map(file => ({
             title: formatGameTitle(file),
-            filename: file,
-            path: `/html/${encodeURIComponent(file)}`
+            filename: file
           })).sort((a, b) => a.title.localeCompare(b.title));
         } else if (games.length === 0) {
           games = GAME_LIST.map(file => ({
             title: formatGameTitle(file),
-            filename: file,
-            path: `/html/${encodeURIComponent(file)}`
+            filename: file
           })).sort((a, b) => a.title.localeCompare(b.title));
         }
 
@@ -392,7 +400,7 @@
       }
 
       container.innerHTML = games.map(game => `
-        <div class="game-card" onclick="playGame('${game.path}', '${game.title}')">
+        <div class="game-card" onclick="playGame('${(game.filename || game.path).replace(/'/g, "\\'")}', '${game.title.replace(/'/g, "\\'")}')">
           <div class="game-card-content">
             <div class="game-card-title">${game.title}</div>
           </div>
@@ -401,7 +409,25 @@
     }
 
     function playGame(path, title) {
-      window.open(path, '_blank');
+      // `path` is a filename (e.g. "game.html") or an absolute URL
+      const base = getBaseUrl();
+      let finalUrl = path;
+      // If path is a bare filename (no protocol or leading slash), build using base
+      if (!/^(https?:)?\/\//i.test(path) && !path.startsWith('/')) {
+        let b = base || './html/';
+        if (!b.endsWith('/')) b += '/';
+        finalUrl = b + encodeURIComponent(path);
+      }
+      window.open(finalUrl, '_blank');
+    }
+
+    function getBaseUrl() {
+      return localStorage.getItem('manygames_base_url') || './html/';
+    }
+
+    function saveBaseUrl(val) {
+      if (!val) localStorage.removeItem('manygames_base_url');
+      else localStorage.setItem('manygames_base_url', val);
     }
 
     function filterGames(query) {
@@ -424,6 +450,17 @@
     });
 
     document.getElementById('refreshBtn').addEventListener('click', loadGames);
+
+    // Base URL input: initialize and listen for changes
+    const baseInput = document.getElementById('baseUrl');
+    if (baseInput) {
+      baseInput.value = getBaseUrl();
+      baseInput.addEventListener('change', (e) => {
+        saveBaseUrl(e.target.value.trim());
+        // re-render in case paths changed
+        loadGames();
+      });
+    }
 
     // Load games on page load
     loadGames();

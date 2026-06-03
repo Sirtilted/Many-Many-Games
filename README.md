@@ -48,3 +48,11 @@ Add new `.html` or `.htm` files to the `html/` folder.
 This repository can be published as a GitHub Pages site from the repository root.
 
 If you want, I can also add a GitHub Actions workflow to build or deploy it automatically.
+
+## Vercel notes
+
+- Vercel serves the repository contents as a static site. To play games from this launcher on Vercel you must either:
+   - Commit and push the `html/` folder with your game files (not recommended for very large collections), or
+   - Host the game files on a CDN or another static host and set the "Games base URL" in the launcher UI (top-right) to that host (for example `https://cdn.example.com/games/`).
+
+- The launcher will use the configured base URL when opening games, so you can deploy the launcher to Vercel and keep the large game assets hosted elsewhere.
